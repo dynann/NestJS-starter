@@ -10,32 +10,41 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from 'src/auth/constants';
+import { Roles } from 'roles.decorator';
+import { Role } from 'role.enum';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @Roles(Role.User)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @Roles(Role.User)
   findOne(@Param('id') id: string) {
+    console.log(Role.User);
     return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
+  @Roles(Role.User)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
+  @Roles(Role.User)
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }

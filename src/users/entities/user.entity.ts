@@ -8,5 +8,9 @@ export class User {
   @Column()
   email: string;
   @Column()
+  password: string;
+  @Column()
   isActive: boolean;
+  @Column('simple-array', { nullable: false, default: 'user' })
+  roles: string[];
 }

@@ -5,9 +5,12 @@ import { NinjasModule } from './ninjas/ninjas.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from './users/entities/user.entity';
 import * as dotenv from 'dotenv';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { RolesGuard } from 'roles.guard';
 dotenv.config();
 
 @Module({
@@ -36,9 +39,14 @@ dotenv.config();
           ? '.env.production'
           : '.env.local',
     }),
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

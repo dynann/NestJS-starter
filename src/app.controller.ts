@@ -2,6 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersService } from './users/users.service';
 import { NinjasService } from './ninjas/ninjas.service';
+import { Roles } from 'roles.decorator';
+import { Role } from 'role.enum';
 
 @Controller()
 export class AppController {
@@ -17,9 +19,11 @@ export class AppController {
   }
 
   @Get()
-  getAllData(): string[] {
+  @Roles(Role.Admin)
+  async getAllData(): Promise<string[]> {
+    const user = await this.userService.findAll();
     return [
-      JSON.stringify(this.userService.findAll()),
+      JSON.stringify(user),
       JSON.stringify(this.ninjaService.getNinjas()),
     ];
   }
